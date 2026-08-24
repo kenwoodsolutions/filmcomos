@@ -1,6 +1,6 @@
 # Phase 1 Scope — YFC Pilot
 
-Minimum launchable scope for FilmOS Phase 1, targeting the Yosemite Film Commission (YFC) pilot tenant. This is a tightening of the spec's own Phase 1 (Weeks 3–6 in `FilmOS_YFC_Product_Spec_v2.docx` §9) — a launchable foundation that preserves the full-vision architecture without overcommitting.
+Minimum launchable scope for FilmComOS Phase 1, targeting the Yosemite Film Commission (YFC) pilot tenant. This is a tightening of the spec's own Phase 1 (Weeks 3–6 in `FilmOS_YFC_Product_Spec_v2.docx` §9) — a launchable foundation that preserves the full-vision architecture without overcommitting.
 
 ## Guiding principles
 
