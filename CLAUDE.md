@@ -33,7 +33,7 @@ designed to be white-labeled for global film commissions worldwide.
 ## Primary Reference
 
 See the full product specification at:
-[./docs/FilmOS_YFC_Product_Spec_v2.docx](./docs/FilmOS_YFC_Product_Spec_v2.docx) *(filename retains the retired "FilmOS" name; the product is FilmComOS — rename the doc in a follow-up.)*
+[./docs/FilmComOS_YFC_Product_Spec_v2.docx](./docs/FilmComOS_YFC_Product_Spec_v2.docx) *(renamed 2026-08-31 — the file previously carried the retired "FilmOS" name.)*
 Phase-1 scope + blockers: [./docs/phase-1-scope.md](./docs/phase-1-scope.md) · [./docs/phase-1-blockers.md](./docs/phase-1-blockers.md)
 
 ## Tech Stack
