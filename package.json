@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.4",
+    "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.115.0",
     "@vercel/analytics": "^2.0.1",
     "mapbox-gl": "^3.29.0",
