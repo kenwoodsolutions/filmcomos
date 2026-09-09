@@ -26,7 +26,7 @@ jobs:
     name: Secrets — gitleaks (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: Install gitleaks
@@ -40,7 +40,7 @@ jobs:
     name: No tracked .env files (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Fail if a non-.example .env file is tracked
         run: |
           tracked=$(git ls-files | grep -E '(^|/)\.env($|\.)' | grep -vE '\.example$' || true)
@@ -55,21 +55,41 @@ jobs:
     name: Types — tsc (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 20
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run typecheck
 
+  definer-grants:
+    # KSG SECURITY DEFINER Grant Standard (ksg-control/standards/
+    # ksg-security-definer-grants.md). Postgres grants EXECUTE to PUBLIC on every
+    # newly created function and Supabase's `anon` inherits PUBLIC, so a
+    # `revoke ... from anon` is a no-op -- the SQL reads like a lockdown and is
+    # not one.
+    #
+    # FilmComOS adopts this with a CLEAN baseline: the three findings it had
+    # (sec_is_blocked, sec_check_rate, sec_log_abuse) were fixed rather than
+    # ledgered, so there is no definer-guard-baseline.json in this repo at all.
+    # Keep it that way -- a new function revokes.
+    name: SECURITY DEFINER grants (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: '.nvmrc'
+      - run: node scripts/ksg-definer-guard.mjs
+
   sast:
     name: SAST — Semgrep OSS (report-only)
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: '3.12'
       - run: pip install --quiet semgrep
@@ -87,8 +107,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 20
           cache: npm
@@ -100,8 +120,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 20
           cache: npm
