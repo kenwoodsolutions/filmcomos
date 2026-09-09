@@ -46,8 +46,19 @@ const DROP_FN = /drop\s+function\s+(?:if\s+exists\s+)?(?:public\.)?"?([a-z0-9_]+
 
 /** Does `sql` revoke EXECUTE on `fn` from PUBLIC (not merely from anon)? */
 function revokesFromPublic(sql, fn) {
+  // Match the target function anywhere in a (possibly comma-separated) function
+  // list within one revoke statement. Only the first function follows the literal
+  // `on function` token, so `[^;]*?` is what lets us see b() and c() in
+  // `revoke ... on function a(), b(), c() from public`. The `[^;]` bound keeps the
+  // match inside a single statement, and the required `(` after the name stops it
+  // matching a role name in the `from` clause.
+  //
+  // The lookbehind is load-bearing. Without it that same `[^;]*?` also skips an
+  // identifier prefix, so `foo` would match inside `my_foo()` or `other.foo()` and
+  // report an unguarded SECURITY DEFINER function as revoked from PUBLIC. For a
+  // guard, a false "safe" is far worse than a false alarm.
   const re = new RegExp(
-    `revoke\\s+(?:all|execute)[^;]*?\\bon\\s+function\\s+(?:public\\.)?"?${fn}"?\\s*\\([^;]*?\\bfrom\\b[^;]*?\\bpublic\\b`,
+    `revoke\\s+(?:all|execute)[^;]*?\\bon\\s+function\\s+[^;]*?(?<![a-z0-9_.])(?:public\\.)?"?${fn}"?\\s*\\([^;]*?\\bfrom\\b[^;]*?\\bpublic\\b`,
     "is",
   );
   return re.test(sql);
