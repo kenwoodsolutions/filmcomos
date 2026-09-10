@@ -1,0 +1,27 @@
+-- Reconstructed 2026-09-09. This migration was applied to production on
+-- 2026-06-10 but its file was never committed, so `supabase_migrations`
+-- carried version 20260610023300 while the repo did not. Production is and
+-- was correct; the gap only bit rebuilt databases -- a preview branch, a
+-- fresh environment, a restore -- which came up without this hardening.
+--
+-- A SECURITY DEFINER or trigger function that does not pin search_path
+-- resolves unqualified names against the caller's search_path. A caller who
+-- can create objects in an earlier schema can shadow a built-in and have it
+-- run with the function owner's rights. Pinning search_path closes that.
+--
+-- Scope is deliberately one statement. The five public.sec_* functions look
+-- like they belong here, but they pin search_path inline in their own CREATE
+-- statements in 20260704025604 -- which is already in the repo, and which runs
+-- after this file. public.set_updated_at() is the only function that predates
+-- this migration, and 20260422183701_phase1_schema.sql creates it with no
+-- search_path at all. It is the trigger behind set_updated_at on seven tables.
+--
+-- Verified against production (aqdgtrsfzsuwcwbhnkvl) before writing:
+--   set_updated_at()  ->  search_path=public
+--   sec_* (x5)        ->  search_path=public, pg_temp
+--
+-- Safe to land: version 20260610023300 is already recorded as applied in
+-- production, so `supabase db push` will skip it there. ALTER FUNCTION ... SET
+-- is idempotent regardless.
+
+alter function public.set_updated_at() set search_path = public;
